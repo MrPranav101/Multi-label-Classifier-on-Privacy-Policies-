@@ -18,7 +18,7 @@ def regex(line):
     return line
 
 
-def preproces(path_to_data, path_to_label):
+def data_clean(path_to_data, path_to_label):
     '''
     Inputs:
     path_to_data: path to data.txt
