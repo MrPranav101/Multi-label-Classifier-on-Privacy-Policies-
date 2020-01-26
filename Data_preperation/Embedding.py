@@ -11,4 +11,4 @@ def get_embeddings(embedding_name,path_to_pretrained_model, doc):
     '''
     if embedding_name == "word2vec":
         model = KeyedVectors.load_word2vec_format(path_to_pretrained_model, binary=True)
-        return [embedding if token in model else for token in doc else np.zeros(300)]
+        return [model[token] if token in model else for token in doc else np.zeros(300)]
