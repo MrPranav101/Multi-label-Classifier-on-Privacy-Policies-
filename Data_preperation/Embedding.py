@@ -19,6 +19,7 @@ def get_embeddings(embedding_name,path_to_pretrained_model, doc):
         return model, np.array([model[token] if token in model else np.zeros(300) for token in doc])
     if embedding_name == "glove":
         with open(path_to_pretrained_model) as file:
+            model = {}
             for line in file:
                 split = line.split()
                 model[split[0]] = split[1]
