@@ -2,8 +2,13 @@
 please make all commits in different branches
 
 Added tokenizer, data cleaning and word2vec embedding functions
+
+
 tokenizer(text:str) -> List[str]
+
 usage:
+
+
 form Data_preperation.tokenzie import tokenizer
 
 
