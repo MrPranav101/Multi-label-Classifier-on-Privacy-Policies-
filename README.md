@@ -8,10 +8,13 @@ form Data_preperation.tokenzie import tokenizer
 
 
 text = "i love UCF"
+
 tokenized = tokenizer(text)
 
 
 get_embeddings usage:
+
+
 form Data_preperation.Embeddngs import get_embeddings
 
 
