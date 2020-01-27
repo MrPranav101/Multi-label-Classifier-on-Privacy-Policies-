@@ -35,8 +35,8 @@ def data_clean(path_to_data, path_to_label):
             # to remove stopwords
             line = remove_stopwords(line)
             data.append(line.strip().lower())
-            if data[
-                -1] == "------------------------------------------------------------------------------------------------------":
+            if data[-1] == "------------------------------------------------" \
+                           "------------------------------------------------------":
                 del data[-1]
     string = ""
     privacy_preprocessed = []
