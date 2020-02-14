@@ -23,7 +23,6 @@ def data_clean(path_to_data, path_to_label):
     Inputs:
     path_to_data: path to data.txt
     path_to_label: path to label.txt
-
     Outputs:
     A pandas dataframe with the preprocessed data with the respective category labels
     '''
@@ -49,4 +48,7 @@ def data_clean(path_to_data, path_to_label):
     privacy_preprocessed.append(string)
 
     df['Privacy_Policies'] = privacy_preprocessed
+    df["len"] = df["Privacy_Policies"].apply(lambda x: len(x))
+    df.drop(df[df["len"] == 0].index, inplace=True)
+
     return df
