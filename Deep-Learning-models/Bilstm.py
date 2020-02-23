@@ -11,7 +11,8 @@ from keras.optimizers import Adam
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import roc_auc_score
-form Data_preperation.Embeddngs import get_embeddings
+from utils.Embeddings import get_embeddings
+from utils.data_prep import data_clean
 
 path_to_data = "drive/My Drive/dataset/dataset/data.txt"
 path_to_label = "drive/My Drive/dataset/dataset/labels.xlsx"
