@@ -11,6 +11,11 @@ from keras.optimizers import Adam
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import roc_auc_score
+
+import sys
+# insert at 1, 0 is the script path (or '' in REPL)
+sys.path.insert(1, '../utils')
+
 from utils.Embeddings import get_embeddings
 from utils.data_prep import data_clean
 
