@@ -34,3 +34,8 @@ model = get_embeddings("word2vec",path_to_pretrained_word2vec,tokenized_text)
 evaluation method is coming soon.
 
 Please review and let me know about any changes
+
+
+TO DO
+ADD BPEmb
+ADD TAA https://github.com/PavelOstyakov/toxic/blob/master/tools/extend_dataset.py
