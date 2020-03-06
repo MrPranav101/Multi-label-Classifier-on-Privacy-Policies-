@@ -11,21 +11,21 @@ from keras.optimizers import Adam
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import roc_auc_score
-
+import numpy as np
 import sys
 # insert at 1, 0 is the script path (or '' in REPL)
-sys.path.insert(1, '../utils')
+sys.path.insert(1, '../')
 
-from utils.Embeddings import get_embeddings
+from utils.Embedding import get_embeddings
 from utils.data_prep import data_clean
 
-path_to_data = "drive/My Drive/dataset/dataset/data.txt"
-path_to_label = "drive/My Drive/dataset/dataset/labels.xlsx"
+path_to_data = "../../drive/My Drive/dataset/dataset/data.txt"
+path_to_label = "../../drive/My Drive/dataset/dataset/labels.xlsx"
 
 df = data_clean(path_to_data, path_to_label)
 # df.head()
 
-path_to_embedding = "drive/My Drive/glove.6B/glove.6B.300d.txt"
+path_to_embedding = "../../drive/My Drive/glove.6B/glove.6B.300d.txt"
 embedding_name = "glove"
 
 
