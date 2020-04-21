@@ -61,7 +61,7 @@ def eval_auc(y_pred, y_test):
     plt.ylim([0.0, 1.05])
     plt.xlabel('False Positive Rate')
     plt.ylabel('True Positive Rate')
-    plt.title('Some extension of Receiver operating characteristic to multi-class')
+    plt.title('Receiver operating characteristic')
     plt.legend(loc="upper center", bbox_to_anchor=(1.565, 0.8))
     plt.show()
 
