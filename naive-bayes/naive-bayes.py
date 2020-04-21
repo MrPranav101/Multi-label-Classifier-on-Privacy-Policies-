@@ -1,17 +1,17 @@
 from Data_preperation.data_prep import data_clean
+from Data_preperation.eval import eval_auc
 import numpy as np
 import string
-# from keras.preprocessing import text, sequence
-# from keras import layers, models, optimizers
+import pickle
 from sklearn import model_selection, preprocessing, naive_bayes, metrics
 from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
-from sklearn import decomposition, ensemble
+# from sklearn import ensemble
 
-def feature_encoder(df):
+def feature_encoder(df, category):
 
     x_train, x_validation, y_train, y_validation = model_selection.train_test_split( \
                                                         df['Privacy_Policies'], \
-                                                        df['Category_1'])
+                                                        df[category])
     # label encode the target variable 
     encoder = preprocessing.LabelEncoder()
     y_train = encoder.fit_transform(y_train)
@@ -31,33 +31,48 @@ def word_embedder(x_train, x_val):
 
     return xtrain_count, xvalid_count
 
-def model(classifier, feature_vector_train, label, feature_vector_valid, is_neural_net=False):
+def model(feature_vector_train, label, feature_vector_valid):
     # fit the training dataset on the classifier
-    classifier.fit(feature_vector_train, label)
+    clf = naive_bayes.MultinomialNB()
+    clf.fit(feature_vector_train, label)
     
     # predict the labels on validation dataset
-    predictions = classifier.predict(feature_vector_valid)
+    predictions = clf.predict(feature_vector_valid)
     
-    if is_neural_net:
-        predictions = predictions.argmax(axis=-1)
+    return clf, metrics.accuracy_score(predictions, y_val), predictions
     
-    return metrics.accuracy_score(predictions, y_val)
-    
+def save_pkl(name, clf, outdir):
+    f = open(outdir + name + '.pkl', 'wb')
+    pickle.dump(clf, f)
+    f.close()
+
+def load_pkl(name, outdir):
+    f = open(outdir + name + '.pkl', 'rb')
+    clf = pickle.load(f)
+    f.close()
+
+
 
 if __name__ == "__main__":
     
     path_to_data = 'dataset/data.txt'
     path_to_label = 'dataset/labels.xlsx'
+    outdir = 'output/'
 
     df = data_clean(path_to_data, path_to_label)
     
     label_cols = ['Category_1', 'Category_2', 'Category_3', 'Category_4', 'Category_5', 'Category_6', 'Category_7', 'Category_8', 'Category_9']
-    df['none'] = 1-df[label_cols].max(axis=1)
-    print(df.describe())
 
-    # x_train, x_val, y_train, y_val = feature_encoder(df)
+    y_score = []; y_true = []
+    for i in label_cols:
+        x_train, x_val, y_train, y_val = feature_encoder(df, i)
+        
+        xtrain_count, xvalid_count = word_embedder(x_train, x_val)
+        clf, accuracy, y_pred = model(xtrain_count, y_train, xvalid_count)
+        # save_pkl(i, clf, outdir)
+        y_score.append(y_pred)
+        y_true.append(y_val)
+
+        print("NB, Count Vectors: ", accuracy)
     
-    # xtrain_count, xvalid_count = word_embedder(x_train, x_val)
-    # accuracy = model(naive_bayes.MultinomialNB(), xtrain_count, y_train, xvalid_count)
-
-    # print("NB, Count Vectors: ", accuracy)
+    eval_auc(np.asarray(y_score).T, np.asarray(y_true).T)
