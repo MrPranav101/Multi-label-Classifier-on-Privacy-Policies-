@@ -97,7 +97,7 @@ def train(X_train, X_test, y_train_dict, y_test_dict, embedding_matrix, vocab_si
         return score
     
     else:
-        model.load_weights('LSTM.h5')
+        model.load_weights('Deep-Learning-models/LSTM.h5')
         
         prediction = model.predict(X_test)
         return prediction
