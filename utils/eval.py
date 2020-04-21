@@ -62,7 +62,7 @@ def eval_auc(y_pred, y_test):
     plt.xlabel('False Positive Rate')
     plt.ylabel('True Positive Rate')
     plt.title('Some extension of Receiver operating characteristic to multi-class')
-    plt.legend(loc="lower right")
+    plt.legend(loc="upper center", bbox_to_anchor=(1.565, 0.8))
     plt.show()
 
     return roc_auc["macro"], roc_auc["micro"]
