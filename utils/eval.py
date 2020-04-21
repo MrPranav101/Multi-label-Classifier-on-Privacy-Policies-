@@ -48,10 +48,13 @@ def eval_auc(y_pred, y_test):
              color='navy', linestyle=':', linewidth=4)
 
     colors = cycle(['aqua', 'darkorange', 'cornflowerblue',"red","green","yellow","orange","purple","brown"])
-    for i, color in zip(range(n_classes), colors):
+    classes = ['First Party Collection/Use', 'Third Party Sharing/Collection', 'User Choice/Control',
+               'User Access, Edit and Deletion', 'Data Retention', 'Data Security', 'Policy Change ',
+               'Do Not Track & Technology', 'International & Specific Audiences']
+    for i, cls,color in zip(range(n_classes), classes, colors):
         plt.plot(fpr[i], tpr[i], color=color, lw=lw,alpha = 0.3,
                  label='ROC curve of class {0} (area = {1:0.2f})'
-                 ''.format(i, roc_auc[i]))
+                 ''.format(cls, roc_auc[i]))
 
     plt.plot([0, 1], [0, 1], 'k--', lw=lw)
     plt.xlim([0.0, 1.0])
