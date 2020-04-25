@@ -10,8 +10,8 @@ from sklearn.model_selection import train_test_split
 from keras.preprocessing.text import Tokenizer
 from keras.layers import Input
 from keras.layers.merge import Concatenate
-from Data_preperation.data_prep import data_clean
-# from Data_preperation.Embedding import get_embeddings
+from utils.data_prep import data_clean
+from utils.eval import eval_auc
 
 import pandas as pd
 import numpy as np
@@ -19,15 +19,12 @@ import re
 
 import matplotlib.pyplot as plt
 
-maxlen = 200
+maxlen = 512
 batch_size = 8192
 nb_epoch = 100
 train_len = 400
 
 def split(df, label_cols):
-    # x_train, x_validation, y_train, y_validation = train_test_split( \
-    #                                                     df['Privacy_Policies'], \
-    #                                                     df[label_cols].values)
 
     x_train = df['Privacy_Policies'][:train_len]
     x_validation = df['Privacy_Policies'][train_len:]
@@ -67,7 +64,7 @@ def tokenization(X_train, X_test, path_to_embedding):
 
     return X_train, X_test, vocab_size, embedding_matrix
 
-def train(X_train, X_test, y_train_dict, y_test_dict, embedding_matrix, vocab_size):
+def train(X_train, X_test, y_train_dict, y_test_dict, embedding_matrix, vocab_size, trainable=False):
     input_1 = Input(shape=(maxlen,))
     embedding_layer = Embedding(vocab_size, 100, weights=[embedding_matrix], trainable=False)(input_1)
     LSTM_Layer1 = LSTM(128)(embedding_layer)
@@ -86,14 +83,25 @@ def train(X_train, X_test, y_train_dict, y_test_dict, embedding_matrix, vocab_si
     model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['acc'])
     print(model.summary())
 
-    history = model.fit(x=X_train, \
-                    y=[y_train_dict[value] for value in y_train_dict], \
-                    batch_size=batch_size, epochs=nb_epoch, verbose=1, validation_split=0.2)
+    if trainable:
+        history = model.fit(x=X_train, \
+                        y=[y_train_dict[value] for value in y_train_dict], \
+                        batch_size=batch_size, epochs=nb_epoch, verbose=1, validation_split=0.2)
 
-    score = model.evaluate(x=X_test, y=[y_test_dict[value] for value in y_test_dict], verbose=1)
+        model.save('LSTM.h5')
+        score = model.evaluate(x=X_test, y=[y_test_dict[value] for value in y_test_dict], verbose=1)
+    
+        print("Test Score:", score[0])
+        print("Test Accuracy:", score[1])
 
-    print("Test Score:", score[0])
-    print("Test Accuracy:", score[1])
+        return score
+    
+    else:
+        model.load_weights('Deep-Learning-models/LSTM.h5')
+        
+        prediction = model.predict(X_test)
+        return prediction
+
 
 if __name__ == "__main__":
     
@@ -105,6 +113,9 @@ if __name__ == "__main__":
     label_cols = ['Category_1', 'Category_2', 'Category_3', 'Category_4', 'Category_5', 'Category_6', 'Category_7', 'Category_8', 'Category_9']
 
     X_train, X_val, y_train_dict, y_val_dict = split(df, label_cols)
+    y_true = np.array(list(y_val_dict.values()))
+
     X_train, X_val, vocab_size, embedding_matrix = tokenization(X_train, X_val, path_to_embedding)
-    train(X_train, X_val, y_train_dict, y_val_dict, embedding_matrix, vocab_size)
+    y_score = train(X_train, X_val, y_train_dict, y_val_dict, embedding_matrix, vocab_size)
     
+    eval_auc(np.resize(np.array(y_score), (9, 52)).T, np.asarray(y_true).T)
